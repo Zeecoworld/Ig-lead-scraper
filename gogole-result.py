@@ -3,8 +3,8 @@ import requests
 import re
 import time
 
-API_KEY = 'AIzaSyC4Mr7wjKfREnX9VmxNMFuiUt4XyelCTNg'
-SEARCH_ENGINE_ID = '268aaf8850a3440fc'
+API_KEY = ''
+SEARCH_ENGINE_ID = ''
 
 
 
