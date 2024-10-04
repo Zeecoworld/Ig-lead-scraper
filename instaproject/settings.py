@@ -23,9 +23,9 @@ import os
 SECRET_KEY = 'django-insecure-99qgz=e%fpqo*fmc-(&%5(fs3=htdci8zx$ll^2$^p3m9g7=8t'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ig-lead-scraper.onrender.com']
 
 
 # Application definition
