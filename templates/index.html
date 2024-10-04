@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-instagram h3 mb-0"></i> InstaLeads
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact-us' %}">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container main-content">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h2 class="text-center mb-4">Instagram Leads Generator</h2>
+                        <form id="searchForm" method='POST' action="">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                {{ form.searchTerms.label_tag }}
+                                {{ form.searchTerms }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.profileType.label_tag }}
+                                {{ form.profileType }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.includeTerms.label_tag }}
+                                {{ form.includeTerms }}
+                            </div>
+                            
+                            <div class="mb-3">
+                                {{ form.excludeTerms.label_tag }}
+                                 {{ form.excludeTerms }}
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#urlModal">Check on Google</button>
+                                <button type="button" class="btn btn-success" id="extractBtn">Extract Leads</button>
+                            </div>
+                        </form>
+                        
+                        <div id="result" class="mt-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap Modal -->
+        <div class="modal fade" id="urlModal" tabindex="-1" aria-labelledby="urlModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="urlModalLabel">Generated URL</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input class="form-control" id="generatedUrl" readonly>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <a href="#" target="_blank" class="btn btn-primary open-url-btn">Open in Browser</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- JavaScript -->
+    <script>
+          document.getElementById('searchForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const response = await fetch('/', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                document.getElementById('result').innerHTML = '<pre>' + result.url + '</pre>';
+                
+                // Update the generated URL in the modal input
+                const generatedUrlInput = document.getElementById('generatedUrl');
+                generatedUrlInput.value = result.url;
+                
+                // Show the modal
+                var myModal = new bootstrap.Modal(document.getElementById('urlModal'));
+                myModal.show();
+
+                // Update the "Open in Browser" button href
+                const openUrlBtn = document.querySelector('.open-url-btn');
+                openUrlBtn.href = result.url;
+            } else {
+                alert('Failed to generate URL. Please try again.');
+            }
+        });
+
+        // Make the input clickable to select all text
+        document.getElementById('generatedUrl').addEventListener('click', function() {
+            this.select();
+        });
+    </script>
+</body>
+{% endblock %}
