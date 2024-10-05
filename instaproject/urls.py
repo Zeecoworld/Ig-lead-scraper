@@ -17,10 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from instapp import views
+from django.contrib.sitemaps.views import sitemap
+from instapp.sitemap import StaticViewSitemap
+
+sitemaps = {
+    'static': StaticViewSitemap
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", views.index, name="home"),
     path("contact-us/", views.contact, name="contact-us"),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),
     
 ]
